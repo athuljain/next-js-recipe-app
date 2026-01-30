@@ -2,8 +2,16 @@
 import { useEffect, useState } from "react";
 
 export default function Dashboard() {
+
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState(null);
+
+  // Load userId after page loads
+  useEffect(() => {
+    const id = localStorage.getItem("userId");
+    setUserId(id);
+  }, []);
 
   const loadRecipes = async () => {
     const res = await fetch("/api/recipes/get");
@@ -17,6 +25,11 @@ export default function Dashboard() {
   }, []);
 
   const likeRecipe = async (id) => {
+    if (!userId) {
+      alert("Please login to like recipes");
+      return;
+    }
+
     await fetch("/api/recipes/like", {
       method: "POST",
       headers: {
@@ -24,7 +37,7 @@ export default function Dashboard() {
       },
       body: JSON.stringify({
         recipeId: id,
-        userId: "123"
+        userId
       })
     });
 
@@ -39,13 +52,16 @@ export default function Dashboard() {
 
       {loading && <p>Loading...</p>}
 
-      {recipes.map(r => (
-        <div key={r._id}>
+      {recipes.map((r) => (
+        <div
+          key={r._id}
+          style={{ border: "1px solid gray", padding: 10, marginBottom: 10 }}
+        >
           <h3>{r.title}</h3>
           <p>{r.ingredients}</p>
 
           <button onClick={() => likeRecipe(r._id)}>
-            ❤️ {r.likes.length}
+            {r.likes.includes(userId) ? "❤️" : "🤍"} {r.likes.length}
           </button>
         </div>
       ))}

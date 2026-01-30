@@ -13,24 +13,29 @@ export default function Login() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      body: JSON.stringify(form)
-    });
+  const res = await fetch("/api/auth/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(form)
+  });
 
-    const data = await res.json();
+  const data = await res.json();
 
-    if (data.token) {
-      localStorage.setItem("token", data.token);
-      router.push("/dashboard");
-    } else {
-      alert("Invalid Credentials");
-    }
-  };
+  if (data.token) {
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("userId", data.user.id);   // ✅ ADD THIS
+    localStorage.setItem("name", data.user.name);   // optional
 
+    router.push("/dashboard");
+  } else {
+    alert("Invalid Credentials");
+  }
+};
   return (
     <div>
       <h1>Login</h1>

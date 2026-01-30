@@ -48,8 +48,11 @@ export async function POST(req) {
     { expiresIn: "1d" }
   );
 
-  return Response.json({
-    token,
-    role: user.role
+ return Response.json({
+  token,
+  user: {
+    id: user._id,
+    name: user.name
+  }
   });
 }
