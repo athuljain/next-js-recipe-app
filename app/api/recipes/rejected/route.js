@@ -3,11 +3,14 @@ import Recipe from "../../../../models/Recipe";
 
 export async function GET() {
   await connectDB();
+const recipes = await Recipe.find({ status: "rejected" })
+  .populate("user", "name email");
 
-  const recipes = await Recipe.find({ status: "rejected" });
 
-  return new Response(JSON.stringify(recipes), {
-    status: 200,
-    headers: { "Content-Type": "application/json" },
-  });
+const formatted = recipes.map((r) => ({
+  ...r,
+  userName: r.userId?.name || "Unknown",
+}));
+
+return Response.json(formatted);
 }

@@ -1,14 +1,28 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { jwtDecode } from "jwt-decode";
 
 export default function SubmitRecipe() {
   const router = useRouter();
+  const [userId, setUserId] = useState(null);
+
   const [form, setForm] = useState({
     title: "",
     ingredients: "",
     steps: ""
   });
+
+  const token = localStorage.getItem("token");
+const decoded = jwtDecode(token);
+
+
+
+  // get logged-in user id
+  useEffect(() => {
+    const id = localStorage.getItem("userId");
+    setUserId(id);
+  }, []);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -18,9 +32,16 @@ export default function SubmitRecipe() {
     e.preventDefault();
 
     await fetch("/api/recipes/add", {
-      method: "POST",
-      body: JSON.stringify(form)
-    });
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    authorization: "Bearer " + token
+  },
+  body: JSON.stringify({
+    ...form,
+    userId: decoded.id   // 👈 IMPORTANT
+  })
+});
 
     alert("Recipe Submitted for Approval");
     router.push("/dashboard");
@@ -31,9 +52,27 @@ export default function SubmitRecipe() {
       <h1>Submit Recipe</h1>
 
       <form onSubmit={handleSubmit}>
-        <input name="title" placeholder="Title" onChange={handleChange} />
-        <textarea name="ingredients" placeholder="Ingredients" onChange={handleChange} />
-        <textarea name="steps" placeholder="Steps" onChange={handleChange} />
+        <input
+          name="title"
+          placeholder="Title"
+          onChange={handleChange}
+          required
+        />
+
+        <textarea
+          name="ingredients"
+          placeholder="Ingredients"
+          onChange={handleChange}
+          required
+        />
+
+        <textarea
+          name="steps"
+          placeholder="Steps"
+          onChange={handleChange}
+          required
+        />
+
         <button>Submit</button>
       </form>
     </div>

@@ -3,9 +3,10 @@ import Recipe from "../../../../models/Recipe";
 
 export async function GET() {
   await connectDB();
-  const recipes = await Recipe.find(); 
-  return new Response(JSON.stringify(recipes), {
-    status: 200,
-    headers: { "Content-Type": "application/json" },
-  });
+
+  const recipes = await Recipe.find()
+    .populate("userId", "name email")
+    .lean();
+
+  return Response.json(recipes);
 }
