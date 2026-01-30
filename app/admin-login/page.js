@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 
 export default function AdminLogin() {
   const router = useRouter();
+
   const [form, setForm] = useState({
     email: "",
     password: ""
@@ -24,7 +25,7 @@ export default function AdminLogin() {
 
     const data = await res.json();
 
-    if (data.token && data.role === "admin") {
+    if (data.token && data.user.role === "admin") {
       localStorage.setItem("token", data.token);
       router.push("/admin");
     } else {
@@ -32,6 +33,7 @@ export default function AdminLogin() {
     }
   };
 
+  // ✅ RETURN MUST BE HERE
   return (
     <div>
       <h2>Admin Login</h2>
@@ -42,13 +44,15 @@ export default function AdminLogin() {
           placeholder="Admin Email"
           onChange={handleChange}
         />
+
         <input
           type="password"
           name="password"
           placeholder="Password"
           onChange={handleChange}
         />
-        <button>Login</button>
+
+        <button type="submit">Login</button>
       </form>
     </div>
   );
