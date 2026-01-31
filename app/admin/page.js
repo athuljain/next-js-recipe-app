@@ -165,13 +165,8 @@ export default function AdminPage() {
             >
               <h3>{r.title}</h3>
 
-              <p>
-                <strong>Submitted By:</strong> {r.user?.name}
-              </p>
-
-              <p>
-                <strong>Email:</strong> {r.user?.email}
-              </p>
+            <p><strong>Submitted By:</strong> {r.userId?.name}</p>
+<p><strong>Email:</strong> {r.userId?.email}</p>
 
               <p>{r.ingredients}</p>
 

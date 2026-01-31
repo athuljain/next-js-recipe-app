@@ -63,7 +63,7 @@ export default function Dashboard() {
               boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
               transition: "transform 0.2s",
             }}
-            onClick={() => router.push(`/recipe/${r._id}`)} // navigate to single recipe page
+           onClick={() => router.push(`/recipe/${r._id}`)}
           >
             {/* User Info */}
             <p style={{ fontWeight: "bold", marginBottom: 5 }}>
@@ -75,11 +75,11 @@ export default function Dashboard() {
             <p>{r.ingredients}</p>
 
             {/* Recipe Status */}
-            {r.status && (
+            {/* {r.status && (
               <p>
                 <strong>Status:</strong> {r.status}
               </p>
-            )}
+            )} */}
 
             {/* Likes Button */}
             <button
