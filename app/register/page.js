@@ -24,7 +24,9 @@ export default function Register() {
 
     const data = await res.json();
     alert(data.message);
+   if (res.status === 400 || res.ok) {
     router.push("/login");
+  }
   };
 
   return (

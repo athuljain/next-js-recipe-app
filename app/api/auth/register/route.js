@@ -6,6 +6,16 @@ export async function POST(req) {
   const { name, email, password } = await req.json();
   await connectDB();
 
+
+    const user = await User.findOne({ email });
+
+  if (user) {
+    return Response.json(
+      { message: "You already have an account. Please login." },
+      { status: 400 }
+    );
+  }
+
   const hash = await bcrypt.hash(password, 10);
   await User.create({ name, email, password: hash });
 
