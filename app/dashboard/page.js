@@ -10,14 +10,34 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState(null);
   const [userName, setUserName] = useState("");
+  const [userProfile, setUserProfile] = useState({ name: "", profilePic: "" });
 
   // ✅ Get logged user from localStorage
+  // useEffect(() => {
+  //   const id = localStorage.getItem("userId");
+  //   const name = localStorage.getItem("name");
+
+  //   setUserId(id);
+  //   setUserName(name);
+  // }, []);
+
   useEffect(() => {
     const id = localStorage.getItem("userId");
-    const name = localStorage.getItem("name");
-
+     const name = localStorage.getItem("name");
     setUserId(id);
     setUserName(name);
+
+    if (id) {
+      fetch(`/api/users/${id}`)
+        .then(res => res.json())
+        .then(data => {
+          setUserProfile({
+            name: data.name || "User",
+            profilePic: data.profilePic || ""
+          });
+        })
+        .catch(err => console.error("Error fetching user header:", err));
+    }
   }, []);
 
   // ✅ Load recipes
@@ -53,7 +73,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
+   <div style={{ padding: "20px", color: "white", backgroundColor: "black", minHeight: "100vh" }}>
 
       {/* ===== HEADER ===== */}
       <div
@@ -61,75 +81,96 @@ export default function Dashboard() {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          marginBottom: "20px"
+          marginBottom: "30px",
+          borderBottom: "1px solid #333",
+          paddingBottom: "15px"
         }}
       >
-        <h1>All Recipes</h1>
+        <h1 style={{ margin: 0 }}>All Recipes</h1>
 
-        <div style={{ display: "flex", gap: "10px" }}>
-          <button onClick={() => router.push("/submit")}>
+        <div style={{ display: "flex", gap: "15px", alignItems: "center" }}>
+          <button 
+            onClick={() => router.push("/submit")}
+            style={{ padding: "8px 15px", cursor: "pointer", borderRadius: "5px", border: "1px solid white", background: "white", color: "black", fontWeight: "bold" }}
+          >
             ➕ Add Recipe
           </button>
 
-          <button
+          {/* PROFILE BUTTON WITH NAME AND PIC */}
+          <div 
             onClick={() => router.push("/profile")}
             style={{
-              padding: "8px 15px",
-              borderRadius: "8px",
-              background: "#333",
-              color: "white",
-              border: "none",
-              cursor: "pointer"
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+              cursor: "pointer",
+              background: "#1a1a1a",
+              padding: "5px 15px 5px 5px",
+              borderRadius: "30px",
+              border: "1px solid #444"
             }}
           >
-            👤 {userName || "User"}
-          </button>
+            <img 
+              src={userProfile.profilePic || "https://via.placeholder.com/40"} 
+              style={{ width: "35px", height: "35px", borderRadius: "50%", objectFit: "cover", border: "1px solid white" }}
+              alt="me"
+            />
+            <span style={{ fontWeight: "bold", fontSize: "14px" }}>{userProfile.name}</span>
+          </div>
         </div>
       </div>
 
-      {/* ===== LOADING ===== */}
       {loading && <p>Loading...</p>}
 
-      {/* ===== RECIPES GRID ===== */}
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "20px"
-        }}
-      >
-        {recipes.map((r) => (
-          <div
-            key={r._id}
-            onClick={() => router.push(`/recipe/${r._id}`)}
-            style={{
-              border: "1px solid gray",
-              borderRadius: "10px",
-              padding: "15px",
-              width: "280px",
-              cursor: "pointer",
-              boxShadow: "0 4px 8px rgba(0,0,0,0.1)"
-            }}
-          >
-            <p><b>Submitted by:</b> {r.userName || "Unknown"}</p>
-
-            <h3>{r.title}</h3>
-            <p>{r.ingredients}</p>
-
-            {/* LIKE BUTTON */}
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                likeRecipe(r._id);
-              }}
-              style={{ marginTop: "10px" }}
-            >
-              {r.likes?.includes(userId) ? "❤️" : "🤍"} {r.likes?.length || 0}
-            </button>
-          </div>
-        ))}
+{/* ===== RECIPES GRID ===== */}
+<div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
+  {recipes.map((r) => (
+    <div
+      key={r._id}
+      onClick={() => router.push(`/recipe/${r._id}`)}
+      style={{
+        border: "1px solid #333",
+        borderRadius: "12px",
+        padding: "15px",
+        width: "280px",
+        background: "#111", // Dark background for black dashboard
+        cursor: "pointer"
+      }}
+    >
+      {/* 👤 AUTHOR INFO AT TOP OF CARD */}
+      <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px" }}>
+        <img 
+          src={r.userPic || "https://via.placeholder.com/30"} 
+          style={{ 
+            width: "30px", 
+            height: "30px", 
+            borderRadius: "50%", 
+            objectFit: "cover", 
+            border: "1px solid white" 
+          }} 
+          alt="profile"
+        />
+        <span style={{ fontSize: "13px", color: "white", fontWeight: "bold" }}>
+          {r.userName}
+        </span>
       </div>
 
+      <h3 style={{ color: "white", marginTop: "0" }}>{r.title}</h3>
+      <p style={{ color: "#ccc", fontSize: "14px" }}>{r.ingredients.substring(0, 50)}...</p>
+
+      {/* LIKE BUTTON */}
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          likeRecipe(r._id);
+        }}
+        style={{ marginTop: "10px", cursor: "pointer" }}
+      >
+        {r.likes?.includes(userId) ? "❤️" : "🤍"} {r.likes?.length || 0}
+      </button>
+    </div>
+  ))}
+</div>
     </div>
   );
 }
