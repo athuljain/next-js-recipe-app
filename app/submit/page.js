@@ -5,46 +5,36 @@ import { jwtDecode } from "jwt-decode";
 
 export default function SubmitRecipe() {
   const router = useRouter();
+  const [form, setForm] = useState({ title: "", ingredients: "", steps: "" });
   const [userId, setUserId] = useState(null);
+  const [token, setToken] = useState(null);
 
-  const [form, setForm] = useState({
-    title: "",
-    ingredients: "",
-    steps: ""
-  });
-
-  const token = localStorage.getItem("token");
-const decoded = jwtDecode(token);
-
-
-
-  // get logged-in user id
   useEffect(() => {
-  const userId = localStorage.getItem("userId");
-  setUserId(userId);
-}, []);
-
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+    // Only access localStorage inside useEffect
+    const storedToken = localStorage.getItem("token");
+    const storedId = localStorage.getItem("userId");
+    
+    if (!storedToken) {
+      router.push("/login");
+    } else {
+      setToken(storedToken);
+      setUserId(storedId);
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!userId) return alert("Please login first");
 
-    await fetch("/api/recipes/add", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    authorization: "Bearer " + token
-  },
-  body: JSON.stringify({
-    ...form,
-    userId: userId  
-  })
-});
+    const res = await fetch("/api/recipes/add", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...form, userId })
+    });
 
-    alert("Recipe Submitted for Approval");
-    router.push("/dashboard");
+    if (res.ok) {
+      alert("Recipe Submitted!");
+      router.push("/profile"); 
   };
 
   return (

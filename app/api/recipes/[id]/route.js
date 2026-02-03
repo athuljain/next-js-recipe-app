@@ -1,5 +1,5 @@
-import { connectDB } from "@/lib/db";
-import Recipe from "@/models/Recipe";
+import { connectDB } from "../../../../lib/db";
+import Recipe from "../../../../models/Recipe";
 
 export async function GET(req, context) {
   try {
