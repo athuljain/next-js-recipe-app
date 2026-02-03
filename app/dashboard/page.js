@@ -125,35 +125,23 @@ export default function Dashboard() {
 {/* ===== RECIPES GRID ===== */}
 <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
   {recipes.map((r) => (
-    <div
-      key={r._id}
-      onClick={() => router.push(`/recipe/${r._id}`)}
-      style={{
-        border: "1px solid #333",
-        borderRadius: "12px",
-        padding: "15px",
-        width: "280px",
-        background: "#111", // Dark background for black dashboard
-        cursor: "pointer"
-      }}
-    >
-      {/* 👤 AUTHOR INFO AT TOP OF CARD */}
-      <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px" }}>
-        <img 
-          src={r.userPic || "https://via.placeholder.com/30"} 
-          style={{ 
-            width: "30px", 
-            height: "30px", 
-            borderRadius: "50%", 
-            objectFit: "cover", 
-            border: "1px solid white" 
-          }} 
-          alt="profile"
-        />
-        <span style={{ fontSize: "13px", color: "white", fontWeight: "bold" }}>
-          {r.userName}
-        </span>
-      </div>
+  <div key={r._id} style={{ border: "1px solid #333", borderRadius: "12px", padding: "15px", width: "280px", background: "#111" }}>
+    
+    {/* Display the Food Image */}
+    {r.image && (
+      <img 
+        src={r.image} 
+        alt={r.title} 
+        style={{ width: "100%", height: "180px", objectFit: "cover", borderRadius: "8px", marginBottom: "10px" }} 
+      />
+    )}
+
+    <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px" }}>
+       <img src={r.userPic || "/default-avatar.png"} style={{ width: "25px", height: "25px", borderRadius: "50%" }} />
+       <span style={{ fontSize: "12px" }}>{r.userName}</span>
+    </div>
+
+    <h3 style={{ color: "white" }}>{r.title}</h3>
 
       <h3 style={{ color: "white", marginTop: "0" }}>{r.title}</h3>
       <p style={{ color: "#ccc", fontSize: "14px" }}>{r.ingredients.substring(0, 50)}...</p>

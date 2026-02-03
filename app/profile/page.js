@@ -327,51 +327,70 @@ export default function ProfilePage() {
         )}
       </section>
 
-      {/* RECIPES LIST SECTION */}
-      <h2 style={{ textDecoration: "underline", textTransform: "uppercase", marginBottom: "20px", color: "white" }}>My Recipes</h2>
+    {/* RECIPES LIST SECTION */}
+<h2 style={{ textDecoration: "underline", textTransform: "uppercase", marginBottom: "20px", color: "white" }}>My Recipes</h2>
 
-      {recipes.length === 0 && <p style={{ color: "#888" }}>No recipes found (Pending or Approved).</p>}
+{recipes.length === 0 && <p style={{ color: "#888" }}>No recipes found (Pending or Approved).</p>}
 
-      <div style={{ display: "grid", gap: "25px" }}>
-        {recipes.map((r) => (
-          <div
-            key={r._id}
-            style={{
-              border: "1px solid white",
-              padding: "25px",
-              backgroundColor: "#111",
-              position: "relative"
-            }}
-          >
-            <div style={{
-              position: "absolute", top: "15px", right: "15px",
-              padding: "5px 12px", border: "1px solid white",
-              fontSize: "12px", fontWeight: "bold",
-              backgroundColor: r.status === "pending" ? "transparent" : "white",
-              color: r.status === "pending" ? "white" : "black"
-            }}>
-              {r.status.toUpperCase()}
-            </div>
-
-            <h3 style={{ fontSize: "26px", margin: "0 0 20px 0", borderBottom: "1px solid #444", paddingBottom: "5px", color: "white" }}>{r.title}</h3>
-
-            <div style={{ marginBottom: "20px" }}>
-              <h4 style={{ margin: "0 0 5px 0", textTransform: "uppercase", fontSize: "14px", color: "#888" }}>Ingredients:</h4>
-              <p style={{ whiteSpace: "pre-wrap", lineHeight: "1.6", color: "white" }}>{r.ingredients}</p>
-            </div>
-
-            <div style={{ marginBottom: "20px" }}>
-              <h4 style={{ margin: "0 0 5px 0", textTransform: "uppercase", fontSize: "14px", color: "#888" }}>Steps:</h4>
-              <p style={{ whiteSpace: "pre-wrap", lineHeight: "1.6", color: "white" }}>{r.steps}</p>
-            </div>
-
-            <div style={{ borderTop: "1px solid #444", paddingTop: "15px", display: "flex", alignItems: "center", gap: "10px" }}>
-              <span style={{ fontSize: "20px" }}>❤️</span>
-              <b style={{ fontSize: "18px", color: "white" }}>{r.likes?.length || 0} LIKES</b>
-            </div>
-          </div>
-        ))}
+<div style={{ display: "grid", gap: "25px" }}>
+  {recipes.map((r) => (
+    <div
+      key={r._id}
+      style={{
+        border: "1px solid white",
+        padding: "25px",
+        backgroundColor: "#111",
+        position: "relative",
+        display: "flex",
+        flexDirection: "column",
+        gap: "15px"
+      }}
+    >
+      {/* Status Badge */}
+      <div style={{
+        position: "absolute", top: "15px", right: "15px",
+        padding: "5px 12px", border: "1px solid white",
+        fontSize: "12px", fontWeight: "bold",
+        backgroundColor: r.status === "pending" ? "transparent" : "white",
+        color: r.status === "pending" ? "white" : "black",
+        zIndex: 2
+      }}>
+        {r.status.toUpperCase()}
       </div>
+
+      {/* 📸 RECIPE FOOD IMAGE */}
+      {r.image && (
+        <div style={{ width: "100%", height: "300px", overflow: "hidden", borderRadius: "4px", border: "1px solid #333" }}>
+          <img 
+            src={r.image} 
+            alt={r.title} 
+            style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+          />
+        </div>
+      )}
+
+      <h3 style={{ fontSize: "26px", margin: "0", borderBottom: "1px solid #444", paddingBottom: "5px", color: "white" }}>
+        {r.title}
+      </h3>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+        <div>
+          <h4 style={{ margin: "0 0 5px 0", textTransform: "uppercase", fontSize: "12px", color: "#888" }}>Ingredients:</h4>
+          <p style={{ whiteSpace: "pre-wrap", lineHeight: "1.4", color: "white", fontSize: "14px" }}>{r.ingredients}</p>
+        </div>
+        <div>
+          <h4 style={{ margin: "0 0 5px 0", textTransform: "uppercase", fontSize: "12px", color: "#888" }}>Steps:</h4>
+          <p style={{ whiteSpace: "pre-wrap", lineHeight: "1.4", color: "white", fontSize: "14px" }}>{r.steps}</p>
+        </div>
+      </div>
+
+      <div style={{ borderTop: "1px solid #444", paddingTop: "15px", display: "flex", alignItems: "center", gap: "10px" }}>
+        <span style={{ fontSize: "20px" }}>❤️</span>
+        <b style={{ fontSize: "18px", color: "white" }}>{r.likes?.length || 0} LIKES</b>
+      </div>
+    </div>
+  ))}
+</div>
 
       <button 
         onClick={() => router.push("/dashboard")}

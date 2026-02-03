@@ -31,7 +31,7 @@ const recipeSchema = new mongoose.Schema({
   title: String,
   ingredients: String,
   steps: String,
-
+image: String,
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
