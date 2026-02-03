@@ -4,13 +4,12 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function ProfilePage() {
-
   const router = useRouter();
+
   const [user, setUser] = useState(null);
   const [recipes, setRecipes] = useState([]);
 
   useEffect(() => {
-
     const name = localStorage.getItem("name");
     const userId = localStorage.getItem("userId");
 
@@ -22,10 +21,22 @@ export default function ProfilePage() {
     setUser({ name, userId });
 
     fetch(`/api/recipes/user/${userId}`)
-      .then(res => res.json())
-      .then(data => setRecipes(data));
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("MY RECIPES:", data);
 
-  }, []);
+        if (Array.isArray(data)) {
+          setRecipes(data);
+        } else {
+          setRecipes([]);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        setRecipes([]);
+      });
+
+  }, [router]);
 
   if (!user) return <p>Loading...</p>;
 
@@ -66,9 +77,7 @@ export default function ProfilePage() {
           <h3>{r.title}</h3>
           <p>{r.ingredients}</p>
 
-          <p>
-            ❤️ {r.likes?.length || 0}
-          </p>
+          <p>❤️ {r.likes?.length || 0}</p>
 
           <p>Status: {r.status}</p>
         </div>

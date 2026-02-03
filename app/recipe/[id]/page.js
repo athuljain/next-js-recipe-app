@@ -54,7 +54,7 @@ export default function RecipeDetail() {
       <h1>{recipe.title}</h1>
       <p><strong>Submitted by:</strong> {recipe.userId?.name}</p>
       <p><strong>Ingredients:</strong> {recipe.ingredients}</p>
-      <p><strong>Status:</strong> {recipe.status}</p>
+      {/* <p><strong>Status:</strong> {recipe.status}</p> */}
 
       <button onClick={likeRecipe}>
         {recipe.likes?.includes(userId) ? "❤️" : "🤍"}{" "}

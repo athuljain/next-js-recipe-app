@@ -6,7 +6,7 @@ export async function GET(req, { params }) {
   await connectDB();
 
   try {
-    const recipes = await Recipe.find({ userId: params.id })
+    const recipes = await Recipe.find({ userId: id })
       .populate("userId", "name")
       .sort({ _id: -1 });
 

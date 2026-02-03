@@ -20,9 +20,9 @@ const decoded = jwtDecode(token);
 
   // get logged-in user id
   useEffect(() => {
-    const id = localStorage.getItem("userId");
-    setUserId(id);
-  }, []);
+  const userId = localStorage.getItem("userId");
+  setUserId(userId);
+}, []);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -39,7 +39,7 @@ const decoded = jwtDecode(token);
   },
   body: JSON.stringify({
     ...form,
-    userId: decoded.id   // 👈 IMPORTANT
+    userId: userId  
   })
 });
 
