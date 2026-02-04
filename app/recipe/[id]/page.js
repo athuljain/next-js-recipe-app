@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function RecipeDetail() {
   const { id } = useParams();
@@ -47,13 +48,25 @@ export default function RecipeDetail() {
         </button>
 
         {/* 📸 FOOD IMAGE */}
-        {recipe.image && (
-          <img 
-            src={recipe.image} 
-            alt={recipe.title} 
-            style={{ width: "100%", maxHeight: "500px", objectFit: "cover", borderRadius: "15px", border: "1px solid #333", marginBottom: "20px" }} 
-          />
-        )}
+       {recipe.image && (
+  <div style={{ position: "relative", width: "100%", height: "500px", marginBottom: "20px" }}>
+    <Image
+      src={recipe.image} 
+      alt={recipe.title} 
+      width={800} 
+      height={500} 
+      unoptimized={true} 
+      style={{ 
+        width: "100%", 
+        height: "auto", 
+        maxHeight: "500px", 
+        objectFit: "cover", 
+        borderRadius: "15px", 
+        border: "1px solid #333" 
+      }} 
+    />
+  </div>
+)}
 
         <h1 style={{ fontSize: "42px", margin: "10px 0" }}>{recipe.title}</h1>
         

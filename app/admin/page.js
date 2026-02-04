@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
-
+import Image from "next/image";
 export default function AdminPage() {
   const router = useRouter();
 
@@ -164,7 +164,7 @@ export default function AdminPage() {
               }}
             >
               <h3>{r.title}</h3>
-                <img 
+                <Image
         src={r.image} 
         alt={r.title} 
         style={{ width: "100%", height: "180px", objectFit: "cover", borderRadius: "8px", marginBottom: "10px" }} 
@@ -219,7 +219,7 @@ export default function AdminPage() {
               <p><strong>Email:</strong> {u.email}</p>
               <p><strong>Role:</strong> {u.role}</p>
               <p><strong>Description:{u.description}</strong></p>
-               <img 
+               <Image
               src={u.profilePic || "https://via.placeholder.com/150"} 
               style={{ width: "150px", height: "150px", borderRadius: "50%", border: "3px solid white", objectFit: "cover" }} 
               alt="Profile"
