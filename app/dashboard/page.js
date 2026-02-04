@@ -125,8 +125,21 @@ export default function Dashboard() {
 {/* ===== RECIPES GRID ===== */}
 <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
   {recipes.map((r) => (
-  <div key={r._id} style={{ border: "1px solid #333", borderRadius: "12px", padding: "15px", width: "280px", background: "#111" }}>
-    
+ <div 
+      key={r._id} 
+      onClick={() => router.push(`/recipe/${r._id}`)} // 👈 Add this click handler
+      style={{ 
+        border: "1px solid #333", 
+        borderRadius: "12px", 
+        padding: "15px", 
+        width: "280px", 
+        background: "#111", 
+        cursor: "pointer", // 👈 Make it look clickable
+        transition: "0.2s"
+      }}
+      onMouseOver={(e) => e.currentTarget.style.borderColor = "white"}
+      onMouseOut={(e) => e.currentTarget.style.borderColor = "#333"}
+    >
     {/* Display the Food Image */}
     {r.image && (
       <img 

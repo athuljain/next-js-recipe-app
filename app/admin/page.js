@@ -164,6 +164,11 @@ export default function AdminPage() {
               }}
             >
               <h3>{r.title}</h3>
+                <img 
+        src={r.image} 
+        alt={r.title} 
+        style={{ width: "100%", height: "180px", objectFit: "cover", borderRadius: "8px", marginBottom: "10px" }} 
+      />
 
             <p><strong>Submitted By:</strong> {r.userId?.name}</p>
 <p><strong>Email:</strong> {r.userId?.email}</p>
@@ -213,6 +218,12 @@ export default function AdminPage() {
               <p><strong>Name:</strong> {u.name}</p>
               <p><strong>Email:</strong> {u.email}</p>
               <p><strong>Role:</strong> {u.role}</p>
+              <p><strong>Description:{u.description}</strong></p>
+               <img 
+              src={u.profilePic || "https://via.placeholder.com/150"} 
+              style={{ width: "150px", height: "150px", borderRadius: "50%", border: "3px solid white", objectFit: "cover" }} 
+              alt="Profile"
+            />
             </div>
           ))}
         </>
