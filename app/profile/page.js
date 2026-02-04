@@ -8,6 +8,10 @@ export default function ProfilePage() {
   const [recipes, setRecipes] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   
+  const [editingRecipeId, setEditingRecipeId] = useState(null);
+const [recipeEditData, setRecipeEditData] = useState({ title: "", ingredients: "", steps: "", image: "" });
+
+
   const [editData, setEditData] = useState({
     name: "",
     description: "",
@@ -82,6 +86,36 @@ export default function ProfilePage() {
     }
   };
 
+  const startEditing = (recipe) => {
+  setEditingRecipeId(recipe._id);
+  setRecipeEditData({
+    title: recipe.title,
+    ingredients: recipe.ingredients,
+    steps: recipe.steps,
+    image: recipe.image
+  });
+};
+
+// Send the updated data to the API
+const handleRecipeUpdate = async () => {
+  const res = await fetch("/api/recipes/update", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ 
+      recipeId: editingRecipeId, 
+      userId: user._id, 
+      ...recipeEditData 
+    }),
+  });
+
+  if (res.ok) {
+    alert("Recipe updated and sent for re-approval!");
+    window.location.reload(); // Simplest way to refresh the list
+  }
+};
+
+
+
   const handleUpdate = async () => {
     try {
       const res = await fetch("/api/users/update", {
@@ -153,8 +187,10 @@ export default function ProfilePage() {
         )}
       </section>
 
-    {/* RECIPES LIST SECTION */}
-<h2 style={{ textDecoration: "underline", textTransform: "uppercase", marginBottom: "20px", color: "white" }}>My Recipes</h2>
+   {/* RECIPES LIST SECTION */}
+<h2 style={{ textDecoration: "underline", textTransform: "uppercase", marginBottom: "20px", color: "white" }}>
+  My Recipes
+</h2>
 
 {recipes.length === 0 && <p style={{ color: "#888" }}>No recipes found (Pending or Approved).</p>}
 
@@ -172,65 +208,109 @@ export default function ProfilePage() {
         gap: "15px"
       }}
     >
-      {/* Status Badge */}
-      <div style={{
-        position: "absolute", top: "15px", right: "15px",
-        padding: "5px 12px", border: "1px solid white",
-        fontSize: "12px", fontWeight: "bold",
-        backgroundColor: r.status === "pending" ? "transparent" : "white",
-        color: r.status === "pending" ? "white" : "black",
-        zIndex: 2
-      }}>
-        {r.status.toUpperCase()}
-      </div>
-
-      {/* 📸 RECIPE FOOD IMAGE */}
-      {r.image && (
-        <div style={{ width: "100%", height: "300px", overflow: "hidden", borderRadius: "4px", border: "1px solid #333" }}>
-          <img 
-            src={r.image} 
-            alt={r.title} 
-            style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+      {/* WE CHECK HERE: 
+          Is this specific recipe being edited? 
+      */}
+      {editingRecipeId === r._id ? (
+        /* --- EDITING MODE FORM --- */
+        <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
+          <h3 style={{ color: "white", margin: 0 }}>Editing: {r.title}</h3>
+          
+          <label style={{ fontSize: "12px", color: "#888" }}>TITLE</label>
+          <input 
+            value={recipeEditData.title} 
+            onChange={e => setRecipeEditData({...recipeEditData, title: e.target.value})} 
+            style={{ background: "black", color: "white", border: "1px solid white", padding: "10px" }}
           />
+
+          <label style={{ fontSize: "12px", color: "#888" }}>INGREDIENTS</label>
+          <textarea 
+            value={recipeEditData.ingredients} 
+            onChange={e => setRecipeEditData({...recipeEditData, ingredients: e.target.value})} 
+            style={{ background: "black", color: "white", border: "1px solid white", padding: "10px", height: "100px" }}
+          />
+
+          <label style={{ fontSize: "12px", color: "#888" }}>STEPS</label>
+          <textarea 
+            value={recipeEditData.steps} 
+            onChange={e => setRecipeEditData({...recipeEditData, steps: e.target.value})} 
+            style={{ background: "black", color: "white", border: "1px solid white", padding: "10px", height: "100px" }}
+          />
+
+          <div style={{ display: "flex", gap: "10px" }}>
+            <button onClick={handleRecipeUpdate} style={{ background: "white", color: "black", padding: "10px 20px", fontWeight: "bold", cursor: "pointer", border: "none" }}>SAVE CHANGES</button>
+            <button onClick={() => setEditingRecipeId(null)} style={{ background: "transparent", color: "white", border: "1px solid white", padding: "10px 20px", cursor: "pointer" }}>CANCEL</button>
+          </div>
         </div>
+      ) : (
+        /* --- NORMAL VIEW MODE --- */
+        <>
+          {/* Status Badge */}
+          <div style={{
+            position: "absolute", top: "15px", right: "15px",
+            padding: "5px 12px", border: "1px solid white",
+            fontSize: "12px", fontWeight: "bold",
+            backgroundColor: r.status === "pending" ? "transparent" : "white",
+            color: r.status === "pending" ? "white" : "black",
+            zIndex: 2
+          }}>
+            {r.status.toUpperCase()}
+          </div>
+
+          {/* 📸 RECIPE FOOD IMAGE */}
+          {r.image && (
+            <div style={{ width: "100%", height: "300px", overflow: "hidden", borderRadius: "4px", border: "1px solid #333" }}>
+              <img 
+                src={r.image} 
+                alt={r.title} 
+                style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+              />
+            </div>
+          )}
+
+          <h3 style={{ fontSize: "26px", margin: "0", borderBottom: "1px solid #444", paddingBottom: "5px", color: "white" }}>
+            {r.title}
+          </h3>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+            <div>
+              <h4 style={{ margin: "0 0 5px 0", textTransform: "uppercase", fontSize: "12px", color: "#888" }}>Ingredients:</h4>
+              <p style={{ whiteSpace: "pre-wrap", lineHeight: "1.4", color: "white", fontSize: "14px" }}>{r.ingredients}</p>
+            </div>
+            <div>
+              <h4 style={{ margin: "0 0 5px 0", textTransform: "uppercase", fontSize: "12px", color: "#888" }}>Steps:</h4>
+              <p style={{ whiteSpace: "pre-wrap", lineHeight: "1.4", color: "white", fontSize: "14px" }}>{r.steps}</p>
+            </div>
+          </div>
+
+          <div style={{ borderTop: "1px solid #444", paddingTop: "15px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <span style={{ fontSize: "20px" }}>❤️</span>
+              <b style={{ fontSize: "18px", color: "white" }}>{r.likes?.length || 0} LIKES</b>
+            </div>
+            
+            <div style={{ display: "flex", gap: "15px" }}>
+               <button 
+                onClick={() => startEditing(r)}
+                style={{ background: "none", border: "none", color: "#aaa", textDecoration: "underline", cursor: "pointer", fontWeight: "bold" }}
+              >
+                EDIT
+              </button>
+              <button 
+                onClick={() => deleteRecipe(r._id)}
+                style={{ background: "none", border: "none", color: "#ff4d4d", cursor: "pointer", fontWeight: "bold" }}
+              >
+                DELETE
+              </button>
+            </div>
+          </div>
+        </>
       )}
-
-      <h3 style={{ fontSize: "26px", margin: "0", borderBottom: "1px solid #444", paddingBottom: "5px", color: "white" }}>
-        {r.title}
-      </h3>
-
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
-        <div>
-          <h4 style={{ margin: "0 0 5px 0", textTransform: "uppercase", fontSize: "12px", color: "#888" }}>Ingredients:</h4>
-          <p style={{ whiteSpace: "pre-wrap", lineHeight: "1.4", color: "white", fontSize: "14px" }}>{r.ingredients}</p>
-        </div>
-        <div>
-          <h4 style={{ margin: "0 0 5px 0", textTransform: "uppercase", fontSize: "12px", color: "#888" }}>Steps:</h4>
-          <p style={{ whiteSpace: "pre-wrap", lineHeight: "1.4", color: "white", fontSize: "14px" }}>{r.steps}</p>
-        </div>
-      </div>
-
-      <div style={{ borderTop: "1px solid #444", paddingTop: "15px", display: "flex", alignItems: "center", gap: "10px" }}>
-        <span style={{ fontSize: "20px" }}>❤️</span>
-        <b style={{ fontSize: "18px", color: "white" }}>{r.likes?.length || 0} LIKES</b>
-      </div>
-      <button 
-    onClick={() => deleteRecipe(r._id)}
-    style={{ 
-      background: "transparent", 
-      color: "#ff4d4d", 
-      border: "1px solid #ff4d4d", 
-      padding: "5px 10px", 
-      cursor: "pointer", 
-      fontSize: "12px",
-      fontWeight: "bold"
-    }}
-  >
-    DELETE POST
-  </button>
     </div>
   ))}
 </div>
+
+
 
       <button 
         onClick={() => router.push("/dashboard")}

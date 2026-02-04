@@ -164,11 +164,13 @@ export default function AdminPage() {
               }}
             >
               <h3>{r.title}</h3>
-                <Image
-        src={r.image} 
-        alt={r.title} 
-        style={{ width: "100%", height: "180px", objectFit: "cover", borderRadius: "8px", marginBottom: "10px" }} 
-      />
+             <Image
+  src={r.image} 
+  alt={r.title} 
+  width={500} 
+  height={180} 
+  style={{ width: "100%", height: "180px", objectFit: "cover", borderRadius: "8px", marginBottom: "10px" }} 
+/>
 
             <p><strong>Submitted By:</strong> {r.userId?.name}</p>
 <p><strong>Email:</strong> {r.userId?.email}</p>
@@ -219,11 +221,13 @@ export default function AdminPage() {
               <p><strong>Email:</strong> {u.email}</p>
               <p><strong>Role:</strong> {u.role}</p>
               <p><strong>Description:{u.description}</strong></p>
-               <Image
-              src={u.profilePic || "https://via.placeholder.com/150"} 
-              style={{ width: "150px", height: "150px", borderRadius: "50%", border: "3px solid white", objectFit: "cover" }} 
-              alt="Profile"
-            />
+           <Image
+  src={u.profilePic || "https://via.placeholder.com/150"} 
+  width={150} 
+  height={150}
+  style={{ width: "150px", height: "150px", borderRadius: "50%", border: "3px solid white", objectFit: "cover" }} 
+  alt="Profile"
+/>
             </div>
           ))}
         </>
