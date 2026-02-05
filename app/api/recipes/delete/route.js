@@ -6,7 +6,7 @@ export async function DELETE(req) {
     await connectDB();
     const { recipeId, userId } = await req.json();
 
-    // Ensure the recipe belongs to the user before deleting
+    
     const recipe = await Recipe.findOneAndDelete({ 
       _id: recipeId, 
       userId: userId 

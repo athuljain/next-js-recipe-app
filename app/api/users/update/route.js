@@ -8,7 +8,7 @@ export async function PUT(req) {
   const updatedUser = await User.findByIdAndUpdate(
     userId,
     { name, description, youtube, instagram, profilePic },
-    { new: true } // 👈 This returns the UPDATED version
+    { new: true } 
   );
 
   return Response.json({ message: "Updated", user: updatedUser });

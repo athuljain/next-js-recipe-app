@@ -32,7 +32,7 @@ export async function POST(req) {
 
     await recipe.save();
 
-    // ✅ Correct response
+  
     return Response.json({
       likes: recipe.likes.length,
       liked: recipe.likes.includes(userId)

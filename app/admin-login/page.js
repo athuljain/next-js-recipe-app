@@ -33,7 +33,7 @@ export default function AdminLogin() {
     }
   };
 
-  // ✅ RETURN MUST BE HERE
+  
   return (
     <div>
       <h2>Admin Login</h2>

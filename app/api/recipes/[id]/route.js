@@ -5,7 +5,7 @@ export async function GET(req, context) {
   try {
     await connectDB();
 
-    // ✅ unwrap params
+  
     const { id } = await context.params;
 
     const recipe = await Recipe.findById(id)

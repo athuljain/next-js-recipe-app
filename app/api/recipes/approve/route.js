@@ -30,7 +30,7 @@ import Recipe from "@/models/Recipe";
 
 export async function POST(req) {
   try {
-    // ✅ Get token
+
     const authHeader = req.headers.get("authorization");
 
     if (!authHeader) {
@@ -39,14 +39,14 @@ export async function POST(req) {
 
     const token = authHeader.split(" ")[1];
 
-    // ✅ Verify token
+   
     const decoded = jwt.verify(token, process.env.JWT_SECRET || "secret123");
 
     if (decoded.role !== "admin") {
       return Response.json({ error: "Access denied" }, { status: 403 });
     }
 
-    // ✅ Get recipe id
+  
     const { id } = await req.json();
 
     if (!id) {
@@ -55,7 +55,7 @@ export async function POST(req) {
 
     await connectDB();
 
-    // ✅ Update status
+   
     const recipe = await Recipe.findByIdAndUpdate(
       id,
       { status: "approved" },

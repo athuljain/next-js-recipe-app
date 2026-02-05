@@ -28,9 +28,8 @@ export default function Login() {
 
   if (data.token) {
     localStorage.setItem("token", data.token);
-    localStorage.setItem("userId", data.user.id);   // ✅ ADD THIS
-    localStorage.setItem("name", data.user.name);   // optional
-
+    localStorage.setItem("userId", data.user.id);   
+    localStorage.setItem("name", data.user.name);   
     router.push("/dashboard");
   } else {
     alert("Invalid Credentials");

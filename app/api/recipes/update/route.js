@@ -6,10 +6,10 @@ export async function PUT(req) {
     await connectDB();
     const { recipeId, userId, title, ingredients, steps, image } = await req.json();
 
-    // Update the recipe ONLY if it belongs to the user
+  
     const updatedRecipe = await Recipe.findOneAndUpdate(
       { _id: recipeId, userId: userId },
-      { title, ingredients, steps, image, status: "pending" }, // Reset to pending for re-approval
+      { title, ingredients, steps, image, status: "pending" }, 
       { new: true }
     );
 
