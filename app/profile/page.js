@@ -755,8 +755,7 @@ export default function ProfilePage() {
   if (!user) return <div className="min-h-screen bg-background flex items-center justify-center text-foreground font-bold italic tracking-tighter text-2xl">LOADING...</div>;
 
   return (
-    <div className="min-h-screen bg-background text-foreground pb-20">
-      {/* ===== HEADER / COVER AREA ===== */}
+<div className="min-h-screen bg-background text-foreground pb-20">
       <div className="h-48 bg-gradient-to-r from-blue-600 to-purple-600 opacity-20 w-full" />
       
       <div className="max-w-5xl mx-auto px-6">
@@ -767,9 +766,22 @@ export default function ProfilePage() {
                 <div className="relative w-40 h-40 rounded-full border-4 border-background overflow-hidden shadow-xl">
                   <Image src={user.profilePic || "https://via.placeholder.com/150"} alt="Profile" fill className="object-cover" />
                 </div>
+                
                 <div className="flex-1 text-center md:text-left">
-                  <h1 className="text-5xl font-black tracking-tighter mb-2 italic uppercase">{user.name}</h1>
-                  <p className="text-foreground/60 max-w-xl leading-relaxed mb-6">{user.description || "No bio yet. Tell the world about your kitchen secrets."}</p>
+                  {/* --- RECIPE COUNT STAT ADDED HERE --- */}
+                  <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-6 mb-2">
+                    <h1 className="text-5xl font-black tracking-tighter italic uppercase">{user.name}</h1>
+                    <div className="inline-flex items-center gap-2 bg-foreground/10 px-4 py-1 rounded-full border border-foreground/5">
+                      <span className="text-blue-500 font-black text-xl">{recipes.length}</span>
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-foreground/40">Recipes Posted</span>
+                    </div>
+                  </div>
+                  {/* ------------------------------------ */}
+
+                  <p className="text-foreground/60 max-w-xl leading-relaxed mb-6">
+                    {user.description || "No bio yet. Tell the world about your kitchen secrets."}
+                  </p>
+                  
                   <div className="flex flex-wrap justify-center md:justify-start gap-4">
                     <button onClick={() => setIsEditing(true)} className="px-6 py-2 bg-foreground text-background rounded-full font-bold text-sm hover:scale-105 transition-transform">Edit Profile</button>
                     <button onClick={() => { localStorage.clear(); router.push("/login"); }} className="px-6 py-2 border border-red-500/50 text-red-500 rounded-full font-bold text-sm hover:bg-red-500 hover:text-white transition-all">Logout</button>

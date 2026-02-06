@@ -3,10 +3,10 @@ import { connectDB } from "../../../../../lib/db";
 import Recipe from "../../../../../models/Recipe";
 
 
-export async function GET(req, context) { // 👈 Use 'context' to be safe with Next.js 15
+export async function GET(req, context) { 
   try {
     await connectDB();
-    const { id } = await context.params; // 👈 Await params if using Next.js 15
+    const { id } = await context.params;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return Response.json({ error: "Invalid ID" }, { status: 400 });

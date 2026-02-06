@@ -88,7 +88,7 @@ export default function Home() {
       {/* Footer Decoration */}
       <footer className="absolute bottom-10 left-0 w-full px-10 flex justify-between items-center opacity-20">
         <div className="text-[10px] font-mono tracking-widest uppercase">Est. 2026</div>
-        <div className="text-[10px] font-mono tracking-widest uppercase italic">Design by Gemini</div>
+        <div className="text-[10px] font-mono tracking-widest uppercase italic">Design by athul artz</div>
       </footer>
     </div>
   );
