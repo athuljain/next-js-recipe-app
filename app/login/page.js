@@ -1,57 +1,3 @@
-// "use client";
-// import { useState } from "react";
-// import { useRouter } from "next/navigation";
-
-// export default function Login() {
-//   const router = useRouter();
-//   const [form, setForm] = useState({
-//     email: "",
-//     password: ""
-//   });
-
-//   const handleChange = (e) => {
-//     setForm({ ...form, [e.target.name]: e.target.value });
-//   };
-
-//  const handleSubmit = async (e) => {
-//   e.preventDefault();
-
-//   const res = await fetch("/api/auth/login", {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json"
-//     },
-//     body: JSON.stringify(form)
-//   });
-
-//   const data = await res.json();
-
-//   if (data.token) {
-//     localStorage.setItem("token", data.token);
-//     localStorage.setItem("userId", data.user.id);   
-//     localStorage.setItem("name", data.user.name);   
-//     router.push("/dashboard");
-//   } else {
-//     alert("Invalid Credentials");
-//   }
-// };
-//   return (
-//     <div>
-//       <h1>Login</h1>
-
-//       <form onSubmit={handleSubmit}>
-//         <input name="email" placeholder="Email" onChange={handleChange} />
-//         <input
-//           name="password"
-//           type="password"
-//           placeholder="Password"
-//           onChange={handleChange}
-//         />
-//         <button>Login</button>
-//       </form>
-//     </div>
-//   );
-// }
 
 
 
@@ -59,6 +5,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import toast, { Toaster } from "react-hot-toast"; // 1. Import Toast
 
 export default function Login() {
   const router = useRouter();
@@ -86,12 +33,27 @@ export default function Login() {
         localStorage.setItem("token", data.token);
         localStorage.setItem("userId", data.user.id);
         localStorage.setItem("name", data.user.name);
-        router.push("/dashboard");
+        
+        // Success Toast: The chef is in the kitchen!
+        toast.success(`Welcome back, Chef ${data.user.name}!`, {
+          icon: '🔪',
+          style: {
+            borderRadius: '15px',
+            background: '#1a1a1a',
+            color: '#fff',
+            border: '1px solid rgba(255,255,255,0.1)'
+          },
+        });
+
+        setTimeout(() => router.push("/dashboard"), 1200);
       } else {
-        alert("Invalid Credentials");
+        // Error Toast: Wrong recipe/credentials
+        toast.error("Invalid Recipe! Check your email or password.", {
+          icon: '🚫',
+        });
       }
     } catch (error) {
-      alert("Something went wrong. Please try again.");
+      toast.error("The kitchen is closed due to a server error.");
     } finally {
       setIsLoading(false);
     }
@@ -99,23 +61,20 @@ export default function Login() {
 
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Glows - Matching the Register style */}
+      {/* 2. Toaster Container */}
+      <Toaster position="top-center" reverseOrder={false} />
+
+      {/* Background Glows - Matching the Cooking Style */}
       <div className="absolute inset-0 z-0">
         <motion.div 
-          animate={{ 
-            scale: [1, 1.1, 1],
-            x: [0, 30, 0] 
-          }}
+          animate={{ scale: [1, 1.1, 1], x: [0, 30, 0] }}
           transition={{ duration: 10, repeat: Infinity }}
-          className="absolute top-1/4 -right-20 w-80 h-80 rounded-full bg-blue-500/10 blur-[100px]"
+          className="absolute top-1/4 -right-20 w-80 h-80 rounded-full bg-orange-500/10 blur-[100px]"
         />
         <motion.div 
-          animate={{ 
-            scale: [1, 1.2, 1],
-            x: [0, -30, 0] 
-          }}
+          animate={{ scale: [1, 1.2, 1], x: [0, -30, 0] }}
           transition={{ duration: 12, repeat: Infinity }}
-          className="absolute bottom-1/4 -left-20 w-80 h-80 rounded-full bg-purple-500/10 blur-[100px]"
+          className="absolute bottom-1/4 -left-20 w-80 h-80 rounded-full bg-amber-500/10 blur-[100px]"
         />
       </div>
 
@@ -126,8 +85,8 @@ export default function Login() {
         className="relative z-10 w-full max-w-md p-8 mx-4 rounded-3xl border border-foreground/10 bg-background/60 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.1)]"
       >
         <div className="text-center mb-10">
-          <h1 className="text-4xl font-bold tracking-tight">Welcome Back</h1>
-          <p className="text-foreground/50 mt-2">Enter your credentials to access your account</p>
+          <h1 className="text-4xl font-bold tracking-tight">Welcome Back 🧑‍🍳</h1>
+          <p className="text-foreground/50 mt-2">Sign in to start your shift</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -135,9 +94,9 @@ export default function Login() {
             <input
               name="email"
               type="email"
-              placeholder="Email address"
+              placeholder="Chef Email"
               onChange={handleChange}
-              className="w-full px-5 py-4 rounded-2xl bg-foreground/[0.03] border border-foreground/10 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all placeholder:text-foreground/30"
+              className="w-full px-5 py-4 rounded-2xl bg-foreground/[0.03] border border-foreground/10 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 outline-none transition-all placeholder:text-foreground/30"
               required
             />
           </div>
@@ -146,9 +105,9 @@ export default function Login() {
             <input
               name="password"
               type="password"
-              placeholder="Password"
+              placeholder="Chef Password"
               onChange={handleChange}
-              className="w-full px-5 py-4 rounded-2xl bg-foreground/[0.03] border border-foreground/10 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all placeholder:text-foreground/30"
+              className="w-full px-5 py-4 rounded-2xl bg-foreground/[0.03] border border-foreground/10 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 outline-none transition-all placeholder:text-foreground/30"
               required
             />
           </div>
@@ -157,24 +116,27 @@ export default function Login() {
             whileHover={{ y: -2 }}
             whileTap={{ scale: 0.98 }}
             disabled={isLoading}
-            className="w-full py-4 mt-2 bg-foreground text-background font-semibold rounded-2xl shadow-xl hover:shadow-foreground/10 transition-all flex items-center justify-center gap-2"
+            className="w-full py-4 mt-2 bg-orange-600 text-white font-semibold rounded-2xl shadow-xl hover:bg-orange-500 transition-all flex items-center justify-center gap-2"
           >
             {isLoading ? (
-              <div className="h-5 w-5 border-2 border-background/30 border-t-background rounded-full animate-spin" />
+              <>
+                <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <span>Checking Pantry...</span>
+              </>
             ) : (
-              "Sign In"
+              "Clock In"
             )}
           </motion.button>
         </form>
 
         <div className="mt-8 pt-6 border-t border-foreground/5 text-center">
           <p className="text-foreground/40 text-sm">
-            Don't have an account?{" "}
+            New to the team?{" "}
             <button 
               onClick={() => router.push("/register")}
-              className="text-foreground font-semibold hover:text-blue-500 transition-colors"
+              className="text-foreground font-semibold hover:text-orange-500 transition-colors"
             >
-              Create one
+              Apply as Chef
             </button>
           </p>
         </div>
