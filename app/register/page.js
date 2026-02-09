@@ -248,6 +248,7 @@ export default function Register() {
             Sign in
           </button>
         </p>
+        
       </motion.div>
     </div>
   );
