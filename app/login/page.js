@@ -54,6 +54,8 @@ export default function Login() {
       }
     } catch (error) {
       toast.error("The kitchen is closed due to a server error.");
+      console.log(error);
+      
     } finally {
       setIsLoading(false);
     }

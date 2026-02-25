@@ -685,7 +685,6 @@
 
 
 
-
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -698,17 +697,20 @@ export default function ProfilePage() {
   const [recipes, setRecipes] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
 
-  const [editData, setEditData] = useState({ 
-    name: "", 
-    description: "", 
-    youtube: "", 
-    instagram: "", 
-    profilePic: "" 
+  const [editData, setEditData] = useState({
+    name: "",
+    description: "",
+    youtube: "",
+    instagram: "",
+    profilePic: ""
   });
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
-    if (!userId) { router.push("/login"); return; }
+    if (!userId) {
+      router.push("/login");
+      return;
+    }
 
     const fetchData = async () => {
       try {
@@ -727,7 +729,9 @@ export default function ProfilePage() {
         const recipeRes = await fetch(`/api/recipes/user/${userId}`);
         const recipeData = await recipeRes.json();
         setRecipes(Array.isArray(recipeData) ? recipeData : []);
-      } catch (err) { console.error("Fetch error:", err); }
+      } catch (err) {
+        console.error("Fetch error:", err);
+      }
     };
     fetchData();
   }, [router]);
@@ -765,21 +769,32 @@ export default function ProfilePage() {
     if (res.ok) setRecipes(recipes.filter((r) => r._id !== id));
   };
 
-  if (!user) return <div className="min-h-screen bg-background flex items-center justify-center text-foreground font-bold italic tracking-tighter text-2xl">LOADING...</div>;
+  if (!user) return (
+    <div className="min-h-screen bg-background flex items-center justify-center text-foreground font-bold italic tracking-tighter text-2xl">
+      LOADING...
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-background text-foreground pb-20">
+      {/* Top Banner Decor */}
       <div className="h-48 bg-gradient-to-r from-blue-600 to-purple-600 opacity-20 w-full" />
-      
+
       <div className="max-w-5xl mx-auto px-6">
         <section className="relative -mt-24 mb-16 bg-foreground/[0.03] backdrop-blur-xl border border-foreground/10 rounded-[3rem] p-8 md:p-12 shadow-2xl">
           <AnimatePresence mode="wait">
             {!isEditing ? (
-              <motion.div key="display" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex flex-col md:flex-row items-center gap-8">
+              <motion.div 
+                key="display" 
+                initial={{ opacity: 0, y: 10 }} 
+                animate={{ opacity: 1, y: 0 }} 
+                exit={{ opacity: 0, y: -10 }} 
+                className="flex flex-col md:flex-row items-center gap-8"
+              >
                 <div className="relative w-40 h-40 rounded-full border-4 border-background overflow-hidden shadow-xl">
                   <Image src={user.profilePic || "https://via.placeholder.com/150"} alt="Profile" fill className="object-cover" />
                 </div>
-                
+
                 <div className="flex-1 text-center md:text-left">
                   <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-6 mb-2">
                     <h1 className="text-5xl font-black tracking-tighter italic uppercase">{user.name}</h1>
@@ -792,29 +807,58 @@ export default function ProfilePage() {
                   <p className="text-foreground/60 max-w-xl leading-relaxed mb-6">
                     {user.description || "No bio yet. Tell the world about your kitchen secrets."}
                   </p>
-                  
-                  <div className="flex flex-wrap justify-center md:justify-start gap-4">
-                    {/* ADDED CREATE RECIPE BUTTON HERE */}
+
+                  <div className="flex flex-wrap justify-center md:justify-start gap-3">
+                    {/* PRIMARY NAVIGATION: DASHBOARD */}
+                    <button 
+                      onClick={() => router.push("/dashboard")} 
+                      className="px-6 py-2 bg-white/5 border border-foreground/10 rounded-full font-bold text-sm hover:bg-foreground hover:text-background transition-all flex items-center gap-2"
+                    >
+                      <span className="text-lg">⇽</span> Dashboard
+                    </button>
+
                     <button 
                       onClick={() => router.push("/submit")} 
                       className="px-6 py-2 bg-blue-600 text-white rounded-full font-bold text-sm hover:scale-105 hover:bg-blue-500 transition-all shadow-lg shadow-blue-500/20"
                     >
                       + Create Recipe
                     </button>
-                    
-                    <button onClick={() => setIsEditing(true)} className="px-6 py-2 bg-foreground text-background rounded-full font-bold text-sm hover:scale-105 transition-transform">Edit Profile</button>
-                    <button onClick={() => { localStorage.clear(); router.push("/login"); }} className="px-6 py-2 border border-red-500/50 text-red-500 rounded-full font-bold text-sm hover:bg-red-500 hover:text-white transition-all">Logout</button>
+
+                    <button 
+                      onClick={() => setIsEditing(true)} 
+                      className="px-6 py-2 bg-foreground text-background rounded-full font-bold text-sm hover:scale-105 transition-transform"
+                    >
+                      Edit Profile
+                    </button>
+
+                    <button 
+                      onClick={() => { localStorage.clear(); router.push("/login"); }} 
+                      className="px-6 py-2 border border-red-500/50 text-red-500 rounded-full font-bold text-sm hover:bg-red-500 hover:text-white transition-all"
+                    >
+                      Logout
+                    </button>
                   </div>
                 </div>
               </motion.div>
             ) : (
-              <motion.div key="edit" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <motion.div 
+                key="edit" 
+                initial={{ opacity: 0 }} 
+                animate={{ opacity: 1 }} 
+                className="grid grid-cols-1 md:grid-cols-3 gap-8"
+              >
                 <div className="flex flex-col items-center gap-4">
                   <div className="relative w-40 h-40 rounded-full overflow-hidden group cursor-pointer border-4 border-blue-500 shadow-lg">
-                    <Image src={editData.profilePic || "https://via.placeholder.com/150"} alt="Preview" fill className="object-cover transition-opacity group-hover:opacity-50" unoptimized={editData.profilePic?.startsWith("data:")} />
+                    <Image 
+                      src={editData.profilePic || "https://via.placeholder.com/150"} 
+                      alt="Preview" 
+                      fill 
+                      className="object-cover transition-opacity group-hover:opacity-50" 
+                      unoptimized={editData.profilePic?.startsWith("data:")} 
+                    />
                     <label className="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
-                        <span className="text-[10px] font-black uppercase text-white bg-blue-600 px-2 py-1 rounded">Change</span>
-                        <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
+                      <span className="text-[10px] font-black uppercase text-white bg-blue-600 px-2 py-1 rounded">Change</span>
+                      <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
                     </label>
                   </div>
                   <p className="text-[10px] font-black uppercase tracking-widest text-foreground/30">Click Photo to Upload</p>
@@ -823,17 +867,29 @@ export default function ProfilePage() {
                 <div className="md:col-span-2 space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                       <label className="text-xs font-black tracking-widest text-foreground/30 uppercase">Full Name</label>
-                       <input className="w-full bg-background border border-foreground/10 p-3 rounded-xl outline-none focus:border-blue-500" value={editData.name} onChange={(e) => setEditData({...editData, name: e.target.value})} />
+                      <label className="text-xs font-black tracking-widest text-foreground/30 uppercase">Full Name</label>
+                      <input 
+                        className="w-full bg-background border border-foreground/10 p-3 rounded-xl outline-none focus:border-blue-500" 
+                        value={editData.name} 
+                        onChange={(e) => setEditData({ ...editData, name: e.target.value })} 
+                      />
                     </div>
                     <div className="space-y-2">
-                       <label className="text-xs font-black tracking-widest text-foreground/30 uppercase">Instagram Link</label>
-                       <input className="w-full bg-background border border-foreground/10 p-3 rounded-xl outline-none focus:border-pink-500" value={editData.instagram} onChange={(e) => setEditData({...editData, instagram: e.target.value})} />
+                      <label className="text-xs font-black tracking-widest text-foreground/30 uppercase">Instagram Link</label>
+                      <input 
+                        className="w-full bg-background border border-foreground/10 p-3 rounded-xl outline-none focus:border-pink-500" 
+                        value={editData.instagram} 
+                        onChange={(e) => setEditData({ ...editData, instagram: e.target.value })} 
+                      />
                     </div>
                   </div>
                   <div className="space-y-2">
                     <label className="text-xs font-black tracking-widest text-foreground/30 uppercase">Bio</label>
-                    <textarea className="w-full bg-background border border-foreground/10 p-3 rounded-xl h-24 outline-none focus:border-blue-500" value={editData.description} onChange={(e) => setEditData({...editData, description: e.target.value})} />
+                    <textarea 
+                      className="w-full bg-background border border-foreground/10 p-3 rounded-xl h-24 outline-none focus:border-blue-500" 
+                      value={editData.description} 
+                      onChange={(e) => setEditData({ ...editData, description: e.target.value })} 
+                    />
                   </div>
                   <div className="flex gap-4 pt-4">
                     <button onClick={handleUpdate} className="flex-1 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-colors">Save Changes</button>
@@ -847,13 +903,19 @@ export default function ProfilePage() {
 
         {/* ===== RECIPES HEADER ===== */}
         <div className="flex items-center justify-between mb-8 px-4">
-          <h2 className="text-2xl font-black italic uppercase tracking-tighter">My Kitchen Cabinet <span className="text-foreground/20 ml-2">({recipes.length})</span></h2>
-          <button onClick={() => router.push("/dashboard")} className="text-xs font-bold border-b border-foreground/20 pb-1 hover:text-blue-500 transition-colors">BACK TO FEED</button>
+          <h2 className="text-2xl font-black italic uppercase tracking-tighter">
+            My Kitchen Cabinet <span className="text-foreground/20 ml-2">({recipes.length})</span>
+          </h2>
+          <button 
+            onClick={() => router.push("/dashboard")} 
+            className="text-xs font-bold border-b border-foreground/20 pb-1 hover:text-blue-500 transition-colors uppercase tracking-widest"
+          >
+            Back to Feed
+          </button>
         </div>
 
         {/* ===== RECIPES GRID ===== */}
         <div className="grid grid-cols-1 gap-12">
-          {/* Empty State / Quick Call to Action */}
           {recipes.length === 0 && (
             <div 
               onClick={() => router.push("/submit")}
@@ -866,39 +928,65 @@ export default function ProfilePage() {
           )}
 
           {recipes.map((r) => (
-            <motion.div key={r._id} layout className="group relative bg-foreground/[0.02] border border-foreground/5 rounded-[2.5rem] overflow-hidden">
+            <motion.div 
+              key={r._id} 
+              layout 
+              initial={{ opacity: 0, scale: 0.9 }} 
+              animate={{ opacity: 1, scale: 1 }} 
+              className="group relative bg-foreground/[0.02] border border-foreground/5 rounded-[2.5rem] overflow-hidden hover:shadow-2xl transition-all"
+            >
               <div className="flex flex-col lg:flex-row">
                 <div className="relative w-full lg:w-96 h-64 lg:h-auto overflow-hidden">
-                   <Image src={r.image || "https://via.placeholder.com/400"} alt={r.title} fill className="object-cover group-hover:scale-105 transition-transform duration-700" unoptimized={r.image?.startsWith("data:")} />
-                   <div className={`absolute top-6 left-6 px-4 py-1.5 rounded-full text-[10px] font-black tracking-tighter backdrop-blur-md border ${r.status === 'pending' ? 'bg-orange-500/20 text-orange-400 border-orange-500/30' : 'bg-green-500/20 text-green-400 border-green-500/30'}`}>
-                      {r.status?.toUpperCase()}
-                   </div>
+                  <Image 
+                    src={r.image || "https://via.placeholder.com/400"} 
+                    alt={r.title} 
+                    fill 
+                    className="object-cover group-hover:scale-105 transition-transform duration-700" 
+                    unoptimized={r.image?.startsWith("data:")} 
+                  />
+                  <div className={`absolute top-6 left-6 px-4 py-1.5 rounded-full text-[10px] font-black tracking-tighter backdrop-blur-md border ${r.status === 'pending' ? 'bg-orange-500/20 text-orange-400 border-orange-500/30' : 'bg-green-500/20 text-green-400 border-green-500/30'}`}>
+                    {r.status?.toUpperCase()}
+                  </div>
                 </div>
 
                 <div className="flex-1 p-8 lg:p-12">
-                   <div className="flex justify-between items-start mb-4">
-                      <h3 className="text-3xl font-black italic tracking-tighter uppercase">{r.title}</h3>
-                      <button onClick={() => deleteRecipe(r._id)} className="text-xs font-black text-red-500/50 hover:text-red-500 uppercase tracking-widest transition-colors">Delete</button>
-                   </div>
-                   
-                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm text-foreground/60 mb-8">
-                      <div>
-                        <p className="font-black text-[10px] uppercase tracking-widest text-foreground/20 mb-2">Ingredients</p>
-                        <p className="line-clamp-3 leading-relaxed">{r.ingredients}</p>
-                      </div>
-                      <div>
-                        <p className="font-black text-[10px] uppercase tracking-widest text-foreground/20 mb-2">Total Likes</p>
-                        <p className="text-2xl font-bold text-foreground italic">❤️ {r.likes?.length || 0}</p>
-                      </div>
-                   </div>
+                  <div className="flex justify-between items-start mb-4">
+                    <h3 className="text-3xl font-black italic tracking-tighter uppercase">{r.title}</h3>
+                    <button onClick={() => deleteRecipe(r._id)} className="text-xs font-black text-red-500/50 hover:text-red-500 uppercase tracking-widest transition-colors">Delete</button>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm text-foreground/60 mb-8">
+                    <div>
+                      <p className="font-black text-[10px] uppercase tracking-widest text-foreground/20 mb-2">Ingredients</p>
+                      <p className="line-clamp-3 leading-relaxed">{r.ingredients}</p>
+                    </div>
+                    <div>
+                      <p className="font-black text-[10px] uppercase tracking-widest text-foreground/20 mb-2">Total Likes</p>
+                      <p className="text-2xl font-bold text-foreground italic">❤️ {r.likes?.length || 0}</p>
+                    </div>
+                  </div>
 
-                   <button onClick={() => router.push(`/recipe/${r._id}`)} className="w-full py-4 border border-foreground/10 rounded-2xl font-bold hover:bg-foreground hover:text-background transition-all">VIEW FULL RECIPE</button>
+                  <button 
+                    onClick={() => router.push(`/recipe/${r._id}`)} 
+                    className="w-full py-4 border border-foreground/10 rounded-2xl font-bold hover:bg-foreground hover:text-background transition-all"
+                  >
+                    VIEW FULL RECIPE
+                  </button>
                 </div>
               </div>
             </motion.div>
           ))}
         </div>
       </div>
+
+      {/* Floating Dashboard Action for quick exit */}
+      <button 
+        onClick={() => router.push("/dashboard")}
+        className="fixed bottom-8 right-8 z-50 flex items-center gap-2 bg-blue-600 text-white px-6 py-4 rounded-full font-black text-xs uppercase tracking-widest shadow-2xl hover:scale-110 active:scale-95 transition-all md:hidden"
+      >
+        <span>Feed</span>
+        <span className="text-lg">→</span>
+      </button>
     </div>
   );
 }

@@ -166,6 +166,8 @@ export default function Register() {
       }
     } catch (error) {
       toast.error("The stove wouldn't light. Check your connection.");
+      console.log(error);
+      
     } finally {
       setIsLoading(false);
     }
