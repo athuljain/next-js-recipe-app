@@ -57,7 +57,7 @@ export default function Dashboard() {
       <nav className="flex flex-col md:flex-row justify-between items-center gap-6 mb-12 pb-6 border-b border-foreground/5">
         <div>
           <h1 className="text-4xl font-black tracking-tighter">CraveBase</h1>
-          <p className="text-foreground/50 text-sm">Discover the world's best recipes</p>
+          <p className="text-foreground/50 text-sm">Discover the worlds best recipes</p>
         </div>
 
         <div className="flex items-center gap-4">
