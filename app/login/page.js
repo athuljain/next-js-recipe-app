@@ -5,7 +5,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import toast, { Toaster } from "react-hot-toast"; // 1. Import Toast
+import toast, { Toaster } from "react-hot-toast"; 
 
 export default function Login() {
   const router = useRouter();
